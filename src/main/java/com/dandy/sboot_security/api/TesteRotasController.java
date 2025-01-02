@@ -17,4 +17,9 @@ public class TesteRotasController {
     public ResponseEntity<String> privateRoute(Authentication authentication){
         return ResponseEntity.ok("Private route ok!\nusuário conectado: " + authentication.getName());
     }
+
+    @GetMapping("/admin")
+    public ResponseEntity<String> adminRoute(Authentication authentication){
+        return ResponseEntity.ok("Admin route");
+    }
 }
