@@ -1,5 +1,7 @@
 package com.dandy.sboot_security.config;
 
+import com.dandy.sboot_security.domain.security.CustomAuthentication;
+import com.dandy.sboot_security.domain.security.IdentificacaoUsuario;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -11,7 +13,6 @@ import java.util.List;
 
 @Component
 public class SenhaMasterAuthenticationProvider implements AuthenticationProvider {
-
     @Override
     public Authentication authenticate(Authentication authentication) throws AuthenticationException {
 
@@ -22,8 +23,13 @@ public class SenhaMasterAuthenticationProvider implements AuthenticationProvider
         String senhaMaster = "123";
 
         if(loginMaster.equals(login) && senhaMaster.equals(senha)){
-            return new UsernamePasswordAuthenticationToken
-                    ("Sou master", null, List.of(new SimpleGrantedAuthority("ADMIN")));
+            IdentificacaoUsuario identificacaoUsuario = new IdentificacaoUsuario(
+                    "Sou Master",
+                    "Master",
+                    loginMaster,
+                    List.of("ADMIN"));
+
+            return new CustomAuthentication(identificacaoUsuario);
         }
 
         return null;

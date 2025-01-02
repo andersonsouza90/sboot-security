@@ -1,5 +1,7 @@
 package com.dandy.sboot_security.config;
 
+import com.dandy.sboot_security.domain.security.CustomAuthentication;
+import com.dandy.sboot_security.domain.security.IdentificacaoUsuario;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -16,20 +18,27 @@ import java.io.IOException;
 import java.util.List;
 
 @Component
-public class CustomFilter extends OncePerRequestFilter { // Executa uma vez a cada requisição
+public class CustomFilter extends OncePerRequestFilter {
     @Override
-    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
+    protected void doFilterInternal(
+            HttpServletRequest request,
+            HttpServletResponse response,
+            FilterChain filterChain) throws ServletException, IOException {
 
-        System.out.println("Executando CustomFilter...");
         String secretHeader = request.getHeader("x-secret");
 
-        if (secretHeader != null){
-            if (secretHeader.equals("secr3t")) {
+        if(secretHeader != null){
+            if(secretHeader.equals("secr3t")){
+                var identificacaoUsuario = new IdentificacaoUsuario(
+                        "id-secret",
+                        "Muito Secreto",
+                        "x-secret",
+                        List.of("USER")
+                );
+                Authentication authentication = new CustomAuthentication(identificacaoUsuario);
 
-                Authentication authentication = new UsernamePasswordAuthenticationToken(
-                        "Muito secreto", null, List.of(new SimpleGrantedAuthority("USER")));
-
-                SecurityContextHolder.getContext().setAuthentication(authentication);
+                SecurityContext securityContext = SecurityContextHolder.getContext();
+                securityContext.setAuthentication(authentication);
             }
         }
 
